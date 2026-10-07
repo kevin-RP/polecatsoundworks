@@ -139,7 +139,7 @@
         <a class="email-link" href="mailto:polecatsoundworks@gmail.com">polecatsoundworks@gmail.com</a>
         <p class="location">East Yorkshire, UK<br>Remote & in-studio sessions</p>
       </div>
-      <form class="contact-form" action="mailto:polecatsoundworks@gmail.com" method="post" enctype="text/plain">
+      <form class="contact-form" action="https://formspree.io/f/mkjooqgg" method="POST" enctype="text/plain">
         <label>Your name<input name="name" required></label>
         <label>Your email<input type="email" name="email" required></label>
         <label>What can we help with?
@@ -175,5 +175,44 @@
       button.setAttribute('aria-expanded', open);
     });
   </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.querySelector('form[action="https://formspree.io/f/mkjooqgg"]');
+  if (!form) return;
+  let status = form.querySelector('[data-form-status]');
+  if (!status) {
+    status = document.createElement('p');
+    status.setAttribute('data-form-status', '');
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    form.appendChild(status);
+  }
+  form.addEventListener('submit', async function (event) {
+    event.preventDefault();
+    const button = form.querySelector('button[type="submit"], input[type="submit"]');
+    if (button) button.disabled = true;
+    status.textContent = 'Sending your enquiry…';
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (response.ok) {
+        form.reset();
+        status.textContent = 'Thank you — your enquiry has been sent.';
+      } else {
+        status.textContent = 'Sorry, we could not send your enquiry. Please try again.';
+      }
+    } catch (e) {
+      status.textContent = 'Sorry, there was a connection problem. Please try again.';
+    } finally {
+      if (button) button.disabled = false;
+    }
+  });
+});
+</script>
+
 </body>
 </html>
